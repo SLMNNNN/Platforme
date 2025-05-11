@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7" crossorigin="anonymous">
+    <title>Platforme d'examen enligne</title>
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        nav {
+            background-color: #6a0dad;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+            padding: 0;
+            margin: 0;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: larger;
+            transition: color 0.3s ease;
+        }
+
+        nav a:hover {
+            color: #ffe4ff;
+            text-shadow: 0 0 5px #fff;
+        }
+
+    </style>
+<body>
+  <nav>
+    <ul class="nav-left">
+        <li><a href="/">Accueil</a></li>
+    </ul>
+    <ul class="nav-right">
+        <li><a href="/login">Connexion</a></li>
+        <li><a href="/register">Inscription</a></li>
+    </ul>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Section Jumbotron -->
+        <div class="jumbotron">
+            <h1 class="display-4">Bienvenue sur notre site</h1>
+            <p class="lead">Ici, vous pouvez gérer les examens, créer des questions et bien plus. Explorez nos services pour une expérience fluide dans l'éducation en ligne.</p>
+            <hr class="my-4">
+            <p>Découvrez les fonctionnalités de notre plateforme et comment nous pouvons vous aider à créer et gérer efficacement vos examens en ligne.</p>
+            <a class="btn btn-primary btn-lg" href="#" role="button">En savoir plus</a>
+        </div>
+
+        <!-- Section d'information -->
+        <div class="row info-row">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Gérer les examens</h3>
+                    <p>Créez et gérez facilement des examens en ligne pour vos étudiants. Notre interface intuitive rend la gestion des examens simple et efficace.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Créer des questions</h3>
+                    <p>Créez différents types de questions pour vos examens, y compris choix multiples, textes à trous et réponses courtes.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Analyser les résultats</h3>
+                    <p>Suivez et analysez les performances des étudiants grâce à des rapports détaillés. Identifiez les axes d'amélioration et optimisez l'apprentissage.</p>
+                </div>
+            </div>
+        </div>

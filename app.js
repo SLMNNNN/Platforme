@@ -19,6 +19,14 @@ const db =mysql.createConnection({
     database: process.env.DATABASE
 });
 
+const publicDirectory = path.join(__dirname, "./public");
+app.use(express.static(publicDirectory));
+
+app.use(express.urlencoded({ extended: false}));
+app.set('view engine', 'hbs')
+app.use(express.json());//new
+app.use(cookieParser());//new
+
 db.connect( (err) => {
     if (err){
         console.log(err)
