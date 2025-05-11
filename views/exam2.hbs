@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Exam</title>
+  <link rel="stylesheet" href="style2.css">
+</head>
+<body>
+ 
+  <!-- Section Accès Exam -->
+  <div id="access">
+    <input type="text" id="accessCode" placeholder="Enter exam code" />
+    <button onclick="verifyAccess()">Accès aux examens</button>
+  </div>
+
+  <!-- Section Examen -->
+  <div id="exam">
+    <h2>Examen en cours...</h2>
+    <p class="timer" id="timer"></p>
+    <div class="question-container" id="questionContainer"></div>
+    <button onclick="nextQuestion()">Suivant</button>
+  </div>
+
+
+
+  <script>
+    let examId = null;
+    let questions = [];
+    let currentQuestion = 0;
+    let score = 0;
+    let timePerQuestion = 10;
+    let timerInterval;
+
+    function getExamIdFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("examId");
+    }
+
+    window.onload = () => {
+      examId = getExamIdFromURL();
+      if (examId) {
+        const examData = localStorage.getItem(examId);
+        if (examData) {
+          const exam = JSON.parse(examData);
+          questions = exam.questions || [];
+          document.getElementById("studentTitle").innerText = exam.title;
+          getGeolocation();
+        } else {
+          alert("Exam not found. Please enter a valid exam code.");
+          document.getElementById("access").style.display = "block";
+        }
+      } else {
+        document.getElementById("access").style.display = "block";
+      }
+    };
+
+    function verifyAccess() {
+      const code = document.getElementById("accessCode").value.trim();
+      if (!code) return alert("Please enter a code.");
+      const examData = localStorage.getItem(code);
+      if (examData) {
+        examId = code;
+        const exam = JSON.parse(examData);
+        questions = exam.questions || [];
+        document.getElementById("studentTitle").innerText = exam.title;
+        document.getElementById("access").style.display = "none";
+        getGeolocation();
+      } else {
+        alert("Invalid code or exam not found.");
+      }
+    }
+
+    
+
+    function startExam() {
+      if (questions.length === 0) {
+        alert("No questions found for this exam.");
+        return;
+      }
+      document.getElementById("exam").style.display = "block";
+      currentQuestion = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = questions[currentQuestion];
+      let html = `<p><strong>Q${currentQuestion + 1}:</strong> ${q.statement}</p>`;
+      if (q.type === "direct") {
+        html += `<input type="text" id="answer" placeholder="Votre Réponse"/>`;
+        timePerQuestion = parseInt(q.duration);
+      } else if (q.type === "qcm") {
+        html += q.options.map((opt, idx) =>
+          `<label><input type="checkbox" class="qcm-option" value="${idx}"> ${opt.text}</label><br>`
+        ).join('');
+        timePerQuestion = parseInt(q.duration);
+      }
+      document.getElementById("questionContainer").innerHTML = html;
+      startTimer();
+    }
+
+    
+
+    function isAnswerCorrect(expected, given, tolerancePercent) {
+      const tolerance = (parseFloat(tolerancePercent) || 0) / 100;
+      const expectedNum = parseFloat(expected);
+      const givenNum = parseFloat(given);
+
+      if (!isNaN(expectedNum) && !isNaN(givenNum)) {
+        const difference = Math.abs(expectedNum - givenNum);
+        return difference <= expectedNum * tolerance;
+      } else {
+        // texte simple, pas de tolérance
+        return expected.trim().toLowerCase() === given.trim().toLowerCase();
+      }
+    }
+
+    function nextQuestion() {
+      clearInterval(timerInterval);
+      const q = questions[currentQuestion];
+
+      if (q.type === "direct") {
+        const ans = document.getElementById("answer").value.trim();
+        const correctAns = q.answer || "";
+        const tolerance = q.tolerance || 0;
+
+        if (isAnswerCorrect(correctAns, ans, tolerance)) {
+          score += parseFloat(q.points);
+        }
+
+      } else if (q.type === "qcm") {
+        const selected = Array.from(document.querySelectorAll(".qcm-option:checked")).map(i => parseInt(i.value));
+        const correctIndices = q.options.map((o, i) => o.correct ? i : null).filter(i => i !== null);
+        const isCorrect = selected.length === correctIndices.length && selected.every(i => correctIndices.includes(i));
+        if (isCorrect) {
+          score += parseFloat(q.points);
+        }
+      }
+
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion();
+      } else {
+        endExam();
+      }
+    }
+
+    
+
+  </script>
+</body>
+</html>
