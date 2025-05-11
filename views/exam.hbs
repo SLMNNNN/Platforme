@@ -7,7 +7,7 @@
   <title>Création d'Examen</title>
 </head>
 <body>
-
+<button onclick="logout()" id="change" class="btn btn-primary">Déconnexion</button>
 <div class="container">
   <div style="display: flex; justify-content: space-between; align-items: center;">
     <h2>Création d'Examen</h2>
@@ -22,7 +22,9 @@
 
   <label for="public">Public ciblé</label>
   <input type="text" id="public" placeholder="Ex: 2e année MIP, S4, groupe A" />
-
+  
+  <button onclick="generateLink()">Générer un lien d'accès unique</button>
+  <p><strong>Lien généré:</strong> <span id="examLink"></span></p>
   
 
   <hr>
@@ -83,7 +85,22 @@
   let examId = 'exam_' + Math.random().toString(36).substring(2, 10);
   let questions = [];
   let currentEditIndex = null;
+  
+  function generateLink() {
+    const link = `exam2.html?examId=${examId}`;
+    document.getElementById('examLink').textContent = link;
 
+    const exam = {
+      title: document.getElementById('title').value,
+      desc: document.getElementById('desc').value,
+      public: document.getElementById('public').value,
+      questions: questions
+    };
+
+    localStorage.setItem(examId, JSON.stringify(exam));
+    console.log("✅ Exam saved with ID:", examId);
+    loadSavedExams();
+  }
 
   function toggleQuestionType() {
     const type = document.getElementById('questionType').value;
@@ -141,6 +158,22 @@
     localStorage.setItem(examId, JSON.stringify(exam));
   }
 
+  function renderQuestions() {
+    const list = document.getElementById('questionsList');
+    list.innerHTML = '';
+    questions.forEach((q, index) => {
+      const div = document.createElement('div');
+      div.className = 'question-card';
+      div.innerHTML = `
+        <strong>${q.statement}</strong> (${q.type}) - ${q.points} pts - ${q.duration}s<br>
+        <button onclick="editQuestion(${index})">Modifier</button>
+        <button onclick="deleteQuestion(${index})">Supprimer</button>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+
 
   function deleteQuestion(index) {
     questions.splice(index, 1);
@@ -193,6 +226,32 @@
     toggleQuestionType();
   }
 
+  function loadSavedExams() {
+    const container = document.getElementById('savedExams');
+    container.innerHTML = '';
+
+    for (let key in localStorage) {
+      if (key.startsWith('exam_')) {
+        try {
+          const exam = JSON.parse(localStorage.getItem(key));
+          const link = `exam2.html?examId=${key}`;
+          const card = document.createElement('div');
+          card.className = 'question-card';
+          card.innerHTML = `
+            <strong>${exam.title || 'Sans titre'}</strong><br>
+            <em>${exam.desc || 'Pas de description'}</em><br>
+            <small><strong>Public:</strong> ${exam.public || 'Non spécifié'}</small><br>
+            <a href="${link}" target="_blank">🧾 Ouvrir l'examen</a><br>
+            <button onclick="deleteExam('${key}')">🗑️ Supprimer cet examen</button>
+          `;
+          container.appendChild(card);
+        } catch (e) {
+          console.warn('Erreur dans les données de', key);
+        }
+      }
+    }
+  }
+
 
   function deleteExam(key) {
     if (confirm("Voulez-vous vraiment supprimer cet examen ?")) {
@@ -201,6 +260,13 @@
     }
   }
 
+function logout() {
+    localStorage.clear();
+    window.location.href = "/logout";
+  }
+
+
+  loadSavedExams();
 </script>
 </body>
 </html>

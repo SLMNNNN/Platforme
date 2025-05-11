@@ -27,6 +27,11 @@ app.set('view engine', 'hbs')
 app.use(express.json());//new
 app.use(cookieParser());//new
 
+app.post('/login',()=>{
+    const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: '1h' });
+    res.json({ token })
+})
+
 db.connect( (err) => {
     if (err){
         console.log(err)
