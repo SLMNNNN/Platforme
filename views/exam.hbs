@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="style3.css">
+  <title>Création d'Examen</title>
+</head>
+<body>
+
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h2>Création d'Examen</h2>
+    
+  </div>
+
+  <label for="title">Titre</label>
+  <input type="text" id="title" placeholder="Ex: Examen de Mathématiques" />
+
+  <label for="desc">Description</label>
+  <textarea id="desc" placeholder="Ex: Évaluation finale du semestre"></textarea>
+
+  <label for="public">Public ciblé</label>
+  <input type="text" id="public" placeholder="Ex: 2e année MIP, S4, groupe A" />
+
+  
+
+  <hr>
+  <h3>Ajout de Question</h3>
+  <label for="questionType">Type de question</label>
+  <select id="questionType" onchange="toggleQuestionType()">
+    <option value="direct">Question Directe</option>
+    <option value="qcm">QCM</option>
+  </select>
+
+  <div class="question">
+    <label for="statement">Énoncé</label>
+    <textarea id="statement"></textarea>
+
+    <label for="media">Joindre un fichier (image, audio, vidéo)</label>
+    <input type="file" id="media">
+
+    <div id="directInput">
+      <label for="directAnswer">Réponse</label>
+      <input type="text" id="directAnswer" />
+
+      <label for="tolerance">Tolérance (en %)</label>
+      <input type="number" id="tolerance" min="0" max="100" value="10">
+    </div>
+
+    <div id="qcmInput" style="display:none">
+      <label>Options (cochez les bonnes réponses)</label>
+      <div>
+        <input type="text" class="optionText" placeholder="Option 1">
+        <input type="checkbox" class="optionCheck">
+      </div>
+      <div>
+        <input type="text" class="optionText" placeholder="Option 2">
+        <input type="checkbox" class="optionCheck">
+      </div>
+      <div>
+        <input type="text" class="optionText" placeholder="Option 3">
+        <input type="checkbox" class="optionCheck">
+      </div>
+    </div>
+
+    <label for="points">Note</label>
+    <input type="number" id="points" min="0" step="1" value="1">
+
+    <label for="duration">Durée (en secondes)</label>
+    <input type="number" id="duration" min="10" value="30">
+  </div>
+
+  <button onclick="saveQuestion()">Ajouter la question</button>
+  <div id="questionsList"></div>
+
+  <hr>
+  <h3>Examens Enregistrés</h3>
+  <div id="savedExams"></div>
+</div>
+
+<script>
+  let examId = 'exam_' + Math.random().toString(36).substring(2, 10);
+  let questions = [];
+  let currentEditIndex = null;
+
+
+  function toggleQuestionType() {
+    const type = document.getElementById('questionType').value;
+    document.getElementById('directInput').style.display = type === 'direct' ? 'block' : 'none';
+    document.getElementById('qcmInput').style.display = type === 'qcm' ? 'block' : 'none';
+  }
+
+  function saveQuestion() {
+    const type = document.getElementById('questionType').value;
+    const statement = document.getElementById('statement').value;
+    const media = document.getElementById('media').files[0];
+    const points = document.getElementById('points').value;
+    const duration = document.getElementById('duration').value;
+
+    let question = {
+      type,
+      statement,
+      media: media ? media.name : null,
+      points,
+      duration
+    };
+
+    if (type === 'direct') {
+      question.answer = document.getElementById('directAnswer').value;
+      question.tolerance = document.getElementById('tolerance').value;
+    } else if (type === 'qcm') {
+      question.options = [];
+      const texts = document.querySelectorAll('.optionText');
+      const checks = document.querySelectorAll('.optionCheck');
+      texts.forEach((opt, i) => {
+        question.options.push({
+          text: opt.value,
+          correct: checks[i].checked
+        });
+      });
+    }
+
+    if (currentEditIndex !== null) {
+      questions[currentEditIndex] = question;
+      currentEditIndex = null;
+      document.querySelector('button[onclick="saveQuestion()"]').textContent = "Ajouter la question";
+    } else {
+      questions.push(question);
+    }
+
+    resetForm();
+    renderQuestions();
+
+    const exam = {
+      title: document.getElementById('title').value,
+      desc: document.getElementById('desc').value,
+      public: document.getElementById('public').value,
+      questions: questions
+    };
+    localStorage.setItem(examId, JSON.stringify(exam));
+  }
+
+
+  function deleteQuestion(index) {
+    questions.splice(index, 1);
+    renderQuestions();
+  }
+
+  function editQuestion(index) {
+    const q = questions[index];
+    currentEditIndex = index;
+
+    document.getElementById('questionType').value = q.type;
+    toggleQuestionType();
+    document.getElementById('statement').value = q.statement;
+    document.getElementById('points').value = q.points;
+    document.getElementById('duration').value = q.duration;
+
+    if (q.type === 'direct') {
+      document.getElementById('directAnswer').value = q.answer;
+      document.getElementById('tolerance').value = q.tolerance;
+    } else {
+      const texts = document.querySelectorAll('.optionText');
+      const checks = document.querySelectorAll('.optionCheck');
+
+      texts.forEach(t => t.value = '');
+      checks.forEach(c => c.checked = false);
+
+      q.options.forEach((opt, i) => {
+        if (texts[i]) texts[i].value = opt.text;
+        if (checks[i]) checks[i].checked = opt.correct;
+      });
+    }
+
+    document.querySelector('button[onclick="saveQuestion()"]').textContent = "Modifier la question";
+  }
+
+  function resetForm() {
+    document.getElementById('statement').value = '';
+    document.getElementById('media').value = '';
+    document.getElementById('points').value = 1;
+    document.getElementById('duration').value = 30;
+    document.getElementById('directAnswer').value = '';
+    document.getElementById('tolerance').value = 10;
+
+    const texts = document.querySelectorAll('.optionText');
+    const checks = document.querySelectorAll('.optionCheck');
+    texts.forEach(t => t.value = '');
+    checks.forEach(c => c.checked = false);
+
+    document.getElementById('questionType').value = 'direct';
+    toggleQuestionType();
+  }
+
+
+  function deleteExam(key) {
+    if (confirm("Voulez-vous vraiment supprimer cet examen ?")) {
+      localStorage.removeItem(key);
+      loadSavedExams();
+    }
+  }
+
+</script>
+</body>
+</html>
