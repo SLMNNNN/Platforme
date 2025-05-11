@@ -43,6 +43,72 @@
             text-shadow: 0 0 5px #fff;
         }
 
+        .container {
+            margin-top: 50px;
+        }
+
+        /* Jumbotron */
+        .jumbotron {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .jumbotron h1 {
+            font-size: 2.5rem;
+            color: #6a0dad;
+        }
+
+        .jumbotron p {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .jumbotron .btn {
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .jumbotron .btn:hover {
+            background-color: #5e0b9b;
+        }
+
+        /* Information Rows */
+        .info-row {
+            margin-top: 50px;
+        }
+
+        .info-card {
+            background-color: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-card h3 {
+            color: #6a0dad;
+        }
+
+        .info-card p {
+            color: #333;
+        }
+
+        /* Media Queries for responsiveness */
+        @media (max-width: 768px) {
+            .info-card {
+                margin-bottom: 20px;
+            }
+        }
+
     </style>
 <body>
   <nav>
@@ -86,3 +152,73 @@
                 </div>
             </div>
         </div>
+        <!-- Ligne supplémentaire d'information -->
+        <div class="row info-row">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Tableau de bord étudiant</h3>
+                    <p>Les étudiants peuvent facilement consulter et passer les examens qui leur sont attribués, suivre leurs progrès et revoir leurs réponses en détail.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Commentaires en temps réel</h3>
+                    <p>Recevez un retour immédiat sur les performances aux examens, afin de mieux vous préparer pour les suivants et suivre votre progression.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Paramètres personnalisables</h3>
+                    <p>Définissez des minuteries, attribuez des points et personnalisez les paramètres de chaque examen selon les besoins de votre cours.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ligne 3 -->
+        <div class="row info-row">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Stockage dans le cloud</h3>
+                    <p>Stockez et accédez à vos examens et résultats étudiants en toute sécurité dans le cloud, pour un partage et une récupération faciles à tout moment.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Outils collaboratifs</h3>
+                    <p>Collaborez avec d'autres enseignants, partagez des modèles d'examen et travaillez ensemble pour améliorer l'expérience d'apprentissage.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Support multilingue</h3>
+                    <p>Notre plateforme prend en charge plusieurs langues, vous permettant de créer et passer des examens dans la langue de votre choix.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ligne 4 -->
+        <div class="row info-row">
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Rapports interactifs</h3>
+                    <p>Générez des rapports détaillés sur les résultats des examens, pour identifier les forces et faiblesses des étudiants.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Compatible mobile</h3>
+                    <p>Notre plateforme est entièrement optimisée pour les appareils mobiles, vous permettant de gérer les examens à tout moment, où que vous soyez.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="info-card">
+                    <h3>Plateforme sécurisée</h3>
+                    <p>Nous accordons une grande importance à la sécurité, en garantissant la confidentialité de vos examens et des données étudiants grâce aux dernières technologies de chiffrement.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+</body>
+</html>

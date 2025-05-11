@@ -99,3 +99,19 @@ exports.register = (req, res) => {
         });
     });
 }
+
+exports.logout = (req, res) => {
+    // Destroy the session
+    req.session.destroy(err => {
+        if (err) {
+            console.error("Session destruction error:", err);
+            return res.status(500).send("Erreur lors de la déconnexion");
+        }
+
+        // Clear the session cookie
+        res.clearCookie('connect.sid'); // Adjust if your cookie name is different
+
+        // Now redirect to a logged-out confirmation page
+        res.redirect('/logout');
+    });
+};
